@@ -24,10 +24,9 @@ class FileController extends Controller
             $parent = $this->createRootFolder();
         }
 
-        $folder = File::create([
-            'name' => $data['name'],
-            'is_folder' => true,
-        ]);
+        $folder = new File();
+        $folder->name = $data['name'];
+        $folder->is_folder = true;
 
         $parent->appendNode($folder);
 
