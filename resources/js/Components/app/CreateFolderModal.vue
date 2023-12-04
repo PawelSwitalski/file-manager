@@ -43,7 +43,8 @@ import {nextTick, ref} from "vue";
 
 // Uses
 const form = useForm({
-    name: ''
+    name: '',
+    parent_id: null
 })
 const page = usePage();
 
@@ -65,11 +66,14 @@ function onShow() {
 
 function createFolder() {
 
+    form.parent_id = page.props.folder.id
+    const name = form.name;
     form.post(route('folder.create'), {
         preserveScroll: true,
         onSuccess: () => {
             closeModal()
             // Show success notification
+            // showSuccessNotification(`The folder "${name}" was created`)
             form.reset();
         },
         onError: () => folderNameInput.value.focus()

@@ -6,7 +6,7 @@ use App\Models\File;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use PhpParser\Builder;
+use Illuminate\Database\Query\Builder;
 
 class ParentIdBaseRequest extends FormRequest
 {
@@ -17,10 +17,10 @@ class ParentIdBaseRequest extends FormRequest
     public function authorize(): bool
     {
         $this->parent = File::query()
-            ->where('id', '=', $this->input('parent_id'))
+            ->where('id',  $this->input('parent_id'))
             ->first();
 
-        if ($this->parent && $this->parent->isOwnedBy(Auth::id())) {
+        if ($this->parent && !$this->parent->isOwnedBy(Auth::id())) {
             return false;
         }
         return true;
@@ -39,7 +39,7 @@ class ParentIdBaseRequest extends FormRequest
                 ->where(function (Builder $query) {
                     return $query
                         ->where('is_folder', '=', true)
-                        ->where('user_id', '=', Auth::id());
+                        ->where('created_by', '=', Auth::id());
                 })
             ]
         ];
