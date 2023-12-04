@@ -29,7 +29,8 @@ Route::get('/', function () {
 Route::controller( FileController::class)
     ->middleware(['auth', 'verified'])
     ->group(function () {
-    Route::get('/files', 'myFiles')->name('files.index');
+    Route::get('/files/{folder?}', 'myFiles')
+        ->where('folder', '(.*)')->name('files.index');
     Route::post('/folder/create','createFolder')->name('folder.create');
 });
 
