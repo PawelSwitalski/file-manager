@@ -46,6 +46,17 @@ class File extends Model
         return $this->parent_id === null;
     }
 
+    public function get_file_size()
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+
+        $power = $this->size > 0 ? floor(log($this->size, 1024)) : 0;
+
+        return $power > 0 ?
+            number_format($this->size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power] :
+            number_format($this->size) . ' ' . $units[$power];
+    }
+
     protected static function boot()
     {
         parent::boot();
