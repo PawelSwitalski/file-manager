@@ -27,18 +27,10 @@
                     </MenuItem>
                 </div>
                 <div class="px-1 py-1">
-                    <MenuItem v-slot="{ active }">
-                        <a class="text-gray-700 block px-4 py-2 text-sm">
-                            Upload Folder
-                        </a>
-                    </MenuItem>
+                    <FolderUploadMenuItem/>
                 </div>
                 <div class="px-1 py-1">
-                    <MenuItem v-slot="{ active }">
-                        <a class="text-gray-700 block px-4 py-2 text-sm">
-                            Upload Files
-                        </a>
-                    </MenuItem>
+                    <FileUploadMenuItem/>
                 </div>
             </MenuItems>
         </transition>
@@ -51,6 +43,8 @@
 import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/vue";
 import CreateFolderModal from "@/Components/app/CreateFolderModal.vue";
 import {ref} from "vue";
+import FileUploadMenuItem from "@/Components/app/FileUploadMenuItem.vue";
+import FolderUploadMenuItem from "@/Components/app/FolderUploadMenuItem.vue";
 
 //Refs
 const createFolderModal = ref(false);

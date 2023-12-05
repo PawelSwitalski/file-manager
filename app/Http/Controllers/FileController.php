@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\StoreFolderRequest;
 use App\Http\Resources\FileResource;
 use App\Models\File;
@@ -52,6 +53,35 @@ class FileController extends Controller
         $parent->appendNode($folder);
 
 //        return Inertia::render('CreateFile');
+    }
+
+    public function store(StoreFileRequest $request)
+    {
+        $data = $request->validated();
+        $parent = $request->parent;
+        $user = $request->user();
+        $fileTree = $request->file_tree;
+
+        if (!$parent) {
+            $parent = $this->getRoot();
+        }
+
+        if (!empty($fileTree)) {
+            $this->storeFileTree($fileTree, $parent, $user);
+        } else {
+            foreach ($data['files'] as $file) {
+                /** @var \Illuminate\Http\UploadedFile $file */
+                $path = $file->store('/files/'. $user->id);
+
+                $model = new File();
+                $model->storage_path = $path;
+                $model->is_folder = false;
+                $model->name = $file->getClientOriginalName();
+                $model->mime = $file->getMimeType();
+                $model->size = $file->getSize();
+                $parent->appendNode($model);
+            }
+        }
     }
 
     private function getRoot()
