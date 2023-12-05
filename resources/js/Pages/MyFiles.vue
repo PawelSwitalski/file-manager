@@ -45,7 +45,8 @@
             <tr v-for="file of files.data" :key="file.id"
                 @dblclick="openFolder(file)"
                 class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100 cursor-pointer">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex items-center">
+                    <FileIcon :file="file"></FileIcon>
                     {{ file.name }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -72,6 +73,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {router} from "@inertiajs/vue3";
 import {Link} from "@inertiajs/vue3";
+import FileIcon from "@/Components/app/FileIcon.vue";
 
 // Uses
 
