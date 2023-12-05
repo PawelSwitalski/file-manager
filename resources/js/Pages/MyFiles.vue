@@ -83,7 +83,7 @@ const {files} = defineProps({
         type: Object,
     },
     folder: Object,
-    ancestors: Array,
+    ancestors: Object,
 });
 
 // Computed
