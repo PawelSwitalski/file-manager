@@ -33,6 +33,7 @@ Route::controller( FileController::class)
         ->where('folder', '(.*)')->name('files.index');
     Route::post('/folder/create','createFolder')->name('folder.create');
     Route::post('/file','store')->name('file.store');
+    Route::delete('/file','destroy')->name('file.delete');
 });
 
 Route::get('/dashboard', function () {

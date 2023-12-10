@@ -25,9 +25,14 @@
             </ol>
         </nav>
         <div class="flex-1 overflow-auto">
+            <pre>{{ allSelected }}</pre>
+            <pre>{{ selected }}</pre>
             <table class="min-w-full">
                 <thead class="bg-gray-100 border-b">
                 <tr>
+                    <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-[30px] max-w-[30px] pr-0">
+                        <Checkbox @change="onSelectAllChange" v-model:checked="allSelected"/>
+                    </th>
                     <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                         Name
                     </th>
@@ -44,8 +49,13 @@
                 </thead>
                 <tbody>
                 <tr v-for="file of allFiles.data" :key="file.id"
+                    @click="$event => toggleFileSelected(file)"
                     @dblclick="openFolder(file)"
-                    class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100 cursor-pointer">
+                    class="bg-white border-b transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer"
+                    :class="(selected[file.id] || allSelected) ? 'bg-blue-50' : 'bg-white'">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-[30px] max-w-[30px] pr-0">
+                        <Checkbox @change="$event => onSelectCheckboxChange(file)" v-model="selected[file.id]" :checked="selected[file.id] || allSelected"/>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex items-center">
                         <FileIcon :file="file"></FileIcon>
                         {{ file.name }}
@@ -82,6 +92,7 @@ import {Link} from "@inertiajs/vue3";
 import FileIcon from "@/Components/app/FileIcon.vue";
 import {onMounted, onUpdated, ref} from "vue";
 import {httpGet} from "@/Helper/http-helper.js";
+import Checkbox from "@/Components/Checkbox.vue";
 
 // Uses
 
@@ -95,6 +106,8 @@ const props = defineProps({
 });
 
 // Refs
+const allSelected = ref(false);
+const selected = ref({});
 const loadMoreIntersect = ref(null);
 const allFiles = ref({
     data: props.files.data,
@@ -124,6 +137,25 @@ function loadMore() {
             allFiles.value.data = [...allFiles.value.data, ...res.data];
             allFiles.value.next = res.links.next;
         })
+}
+
+function onSelectAllChange() {
+    allFiles.value.data.forEach(file => {
+        selected.value[file.id] = allSelected.value;
+    })
+}
+
+function toggleFileSelected(file) {
+    selected.value[file.id] = !selected.value[file.id];
+    onSelectCheckboxChange(file);
+}
+
+function onSelectCheckboxChange(file) {
+    if (!selected.value[file.id]) {
+        allSelected.value = false;
+    } else {
+        allSelected.value = allFiles.value.data.every(file => selected.value[file.id]);
+    }
 }
 
 // Hooks
